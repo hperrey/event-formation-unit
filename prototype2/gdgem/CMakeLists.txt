@@ -62,4 +62,5 @@ add_subdirectory(vmm2)
 add_subdirectory(vmm3)
 add_subdirectory(clustering)
 add_subdirectory(generators)
+add_subdirectory(nbi_impl)
 

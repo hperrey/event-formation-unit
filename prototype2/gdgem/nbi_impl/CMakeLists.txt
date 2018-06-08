@@ -51,5 +51,5 @@ add_library(nmxhelper STATIC ${NMXHELPER_INC} ${NMXHELPER_SRC})
 add_executable(testnmxclustererfile testNMXClustererFile.cpp)
 target_link_libraries(testnmxclustererfile nmxbase nmxhelper Threads::Threads)
 
-add_executable(verifyclusterer verifyClusterer.cpp)
-target_link_libraries(verifyclusterer nmxhelper)
+#add_executable(verifyclusterer verifyClusterer.cpp)
+#target_link_libraries(verifyclusterer nmxhelper)

@@ -454,7 +454,7 @@ bool NMXPlaneClusterer::newCluster(nmx::DataPoint &point) {
     point = {0,0,0};
 
     return true;
-};
+}
 
 bool NMXPlaneClusterer::insertInCluster(nmx::DataPoint &point) {
 
@@ -551,8 +551,8 @@ bool NMXPlaneClusterer::mergeAndInsert(uint32_t lo_idx, uint32_t hi_idx, nmx::Da
 
     m_cluster.at(point.strip) = point;
 
-    uint pos;
-    uint end;
+    int pos;
+    int end;
 
     if (lo_boxsize >= hi_boxsize) {
         final_cluster = lo_idx;
@@ -587,7 +587,7 @@ bool NMXPlaneClusterer::mergeAndInsert(uint32_t lo_idx, uint32_t hi_idx, nmx::Da
 
     while (pos != end + incr) {
 
-        if (pos >= nmx::STRIPS_PER_PLANE) {
+        if (pos >= static_cast<int>(nmx::STRIPS_PER_PLANE)) {
             std::cerr << "NMXPlaneClusterer::mergeAndInsert> Out of bounds ! Pos = " << pos
                       << " Range [0 - " << nmx::STRIPS_PER_PLANE - 1 << "]" << std::endl;
         }
@@ -595,7 +595,7 @@ bool NMXPlaneClusterer::mergeAndInsert(uint32_t lo_idx, uint32_t hi_idx, nmx::Da
         m_mask.at(pos) = final_cluster;
 
         pos += incr;
-        if (pos >= nmx::STRIPS_PER_PLANE || pos < 0)
+        if (pos >= static_cast<int>(nmx::STRIPS_PER_PLANE) || pos < 0)
             break;
     }
 

@@ -5,6 +5,7 @@
 #ifndef PROJECT_NMXCLUSTERERSETTINGS_H
 #define PROJECT_NMXCLUSTERERSETTINGS_H
 
+#include <stdint.h>
 #include <cmath>
 
 /*! Various configuring parameters
@@ -37,7 +38,7 @@ namespace nmx {
      * This value sets an upper limit to how long a cluster can be in time. This value is specific to the detector
      * configuration and is related to the drift velocity of the electrons in the detector gas medium.
      */
-    const unsigned int MAX_CLUSTER_TIME = static_cast<uint>(30 * 32);
+    const unsigned int MAX_CLUSTER_TIME = static_cast<unsigned int>(30 * 32);
     ///@}
 
 

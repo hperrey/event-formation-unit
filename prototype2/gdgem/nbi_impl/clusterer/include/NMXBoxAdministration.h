@@ -35,6 +35,7 @@ public:
      */
     int getBoxFromStack();
 
+private:
     /*! Retun a box to the stack
      *
      * Once a box is no longer in use, the now free box must be returned to the stack.
@@ -44,6 +45,7 @@ public:
     void returnBoxToStack(unsigned int ibox);
     ///@}
 
+public:
     /*! @name Queue operations */
     ///@{
     /*! Insert a box in the queue

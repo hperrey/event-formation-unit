@@ -27,7 +27,7 @@ set(NMXCLUSTERER_SRC
         clusterer/src/NMXBoxAdministration.cpp
         clusterer/src/NMXClusterManager.cpp
         clusterer/src/NMXClusterPairing.cpp
-        clusterer/src/NMXLocationFinder.cpp)
+        clusterer/src/NMXLocationFinder.cpp tests/testBoxAdministration.cpp)
 
 add_library(nmxbase STATIC ${NMXCLUSTERER_INC} ${NMXCLUSTERER_SRC})
 
@@ -53,3 +53,12 @@ target_link_libraries(testnmxclustererfile nmxbase nmxhelper Threads::Threads)
 
 #add_executable(verifyclusterer verifyClusterer.cpp)
 #target_link_libraries(verifyclusterer nmxhelper)
+
+# Tests
+
+set(NMXBoxAdministrationTest_INC ${NMXCLUSTERER_INC} )
+set(NMXBoxAdministrationTest_SRC
+        tests/testBoxAdministration.cpp
+        clusterer/src/NMXBoxAdministration.cpp
+        )
+create_test_executable(NMXBoxAdministrationTest)

@@ -49,6 +49,18 @@ public:
     /*! Terminate all threads.*/
     void terminate();
 
+    /*! Returns the number of inserted data-points from the X-plane
+     *
+     * @return Number of inserted X data-points
+     */
+    uint64_t getNumberofInsertedDataPointsX() { return m_XplaneClusterer.getNumberOfInsertedDataPoints(); }
+
+    /*! Returns the number of inserted data-points from the X-plane
+     *
+     * @return Number of inserted X data-points
+     */
+    uint64_t getNumberofInsertedDataPointsY() { return m_YplaneClusterer.getNumberOfInsertedDataPoints(); }
+
     /*! Returns the number of produced clusters from the X-plane.
      *
      * @return Number of produced clusters from the X-plane.
@@ -90,7 +102,7 @@ public:
      *
      * @return Number of failed cluster requests.
      */
-    uint64_t getFailedClusterRequests() { return m_clusterManager.getFailedClusterRequests(); }
+    uint64_t* getFailedClusterRequests() { return m_clusterManager.getFailedClusterRequests(); }
 
     /*! Returns the number of times a cluster arrives too late. Late clusters are discarded. Therefore this value
      * should be monitored at run-time. If it increases too fast, the size of the cluster pairing buffer should be
@@ -98,7 +110,7 @@ public:
      *
      * @return Number of late clusters
      */
-    uint64_t getNumberOfLateClusters()  { return m_clusterPairing.getNumberOfLateClusters(); }
+    uint64_t* getNumberOfLateClusters()  { return m_clusterPairing.getNumberOfLateClusters(); }
 
 private:
 
@@ -109,7 +121,7 @@ private:
 
     NMXClusterPairing m_clusterPairing; /*!< Instance of the NMXClusterPairer.*/
 
-    std::mutex m_mutex; /*!< Common mutex for the two instances of the NMXPlaneClusterer.*/
+    //std::mutex m_mutex; /*!< Common mutex for the two instances of the NMXPlaneClusterer.*/
 };
 
 #endif // NMXCLUSTERER_H

@@ -7,7 +7,6 @@
 
 #include <vector>
 #include <thread>
-#include <mutex>
 
 #include "NMXClustererDefinitions.h"
 #include "NMXBoxAdministration.h"
@@ -49,8 +48,8 @@ public:
      * @param clusterPairing Reference to the cluster pairing algorithm
      * @param mutex Common mutex for the two instances of this class
      */
-    NMXPlaneClusterer(int plane, NMXClusterManager &clusterManager, NMXClusterPairing &clusterPairing,
-                      std::mutex &mutex);
+    NMXPlaneClusterer(int plane, NMXClusterManager &clusterManager, NMXClusterPairing &clusterPairing/*,
+                      std::mutex &mutex*/);
     /*! Destructor.
      *
      * Joins the threads.
@@ -83,6 +82,7 @@ public:
 
     void setVerboseLevel(uint level = 0) { m_verbose_level = level; }
 
+    uint64_t getNumberOfInsertedDataPoints() { return m_nPoints; }
     uint64_t getNumberOfProducedClusters() { return m_nClusters; }
     uint64_t getNumberOfOldPoints() { return m_nOldPoints; }
 
@@ -94,12 +94,12 @@ private:
 
     uint32_t m_nB;
     uint32_t m_nC;
-    uint32_t m_nD;
 
     int m_plane;
 
-    std::array<BufferEntry, nmx::STRIPS_PER_PLANE> m_bufferEntries;
+    std::array<BufferEntry, nmx::TRIPLETBUFFER> m_bufferEntries;
 
+    uint64_t m_nPoints = 0;
     uint64_t m_nOldPoints;
 
     std::thread pro;
@@ -109,7 +109,6 @@ private:
 
     NMXClusterManager &m_clusterManager;
     NMXClusterPairing &m_clusterParing;
-    std::mutex& m_mutex;
 
     bool m_terminate;
 
@@ -124,9 +123,8 @@ private:
     nmx::dataColumn_t m_majortimeBuffer;
     nmx::dataColumn_t m_SortQ;
     nmx::dataColumn_t m_ClusterQ;
-    typedef std::array<int, nmx::CLUSTER_MAX_MINOR> dataBuffer_t;
+    typedef std::array<int, nmx::DATA_MAX_MINOR> dataBuffer_t;
     std::array<dataBuffer_t, 2> m_time_ordered_buffer;
-    //nmx::time_ordered_buffer m_time_ordered_buffer;
 
     uint64_t m_nClusters = 0;
 
@@ -160,10 +158,13 @@ private:
     void checkBitSum();
     void printInitialization();
 
+    int m_yields = 100000;
+
+    /*
     bool m_trackPoint = false;
     nmx::DataPoint m_pointToTrack;
     bool checkTrackPoint(const nmx::DataPoint &point);
-
-};
+     */
+    };
 
 #endif //NMX_CLUSTERER_CLUSTERER_H

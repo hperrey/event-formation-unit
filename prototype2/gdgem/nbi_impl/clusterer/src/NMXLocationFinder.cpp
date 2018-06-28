@@ -15,9 +15,6 @@ NMXLocationFinder::NMXLocationFinder(NMXClusterManager &clustermanager)
 }
 
 NMXLocationFinder::~NMXLocationFinder() {
-
-    //std::cout << "Total xPoints = " << totalxPoints << std::endl;
-    //std::cout << "Total yPoints = " << totalyPoints << std::endl;
 }
 
 nmx_location NMXLocationFinder::find(nmx::PairBuffer &buf) {
@@ -35,10 +32,6 @@ nmx_location NMXLocationFinder::find(nmx::PairBuffer &buf) {
            nmx::FullCluster cluster;
            cluster.clusters.at(0) = xcluster;
            cluster.clusters.at(1) = ycluster;
-
-           //totalxPoints += xcluster.nPoints;
-           //totalyPoints += ycluster.nPoints;
-
 
            m_file << "******\n";
            m_file << "x-points:\n";

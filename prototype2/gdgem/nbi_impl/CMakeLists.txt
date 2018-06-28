@@ -27,7 +27,7 @@ set(NMXCLUSTERER_SRC
         clusterer/src/NMXBoxAdministration.cpp
         clusterer/src/NMXClusterManager.cpp
         clusterer/src/NMXClusterPairing.cpp
-        clusterer/src/NMXLocationFinder.cpp tests/testBoxAdministration.cpp)
+        clusterer/src/NMXLocationFinder.cpp)
 
 add_library(nmxbase STATIC ${NMXCLUSTERER_INC} ${NMXCLUSTERER_SRC})
 
@@ -48,17 +48,49 @@ set(NMXHELPER_SRC
 
 add_library(nmxhelper STATIC ${NMXHELPER_INC} ${NMXHELPER_SRC})
 
-add_executable(testnmxclustererfile testNMXClustererFile.cpp)
+add_executable(testnmxclustererfile testNMXClustererFile.cpp nmxclustererh5.cpp)
 target_link_libraries(testnmxclustererfile nmxbase nmxhelper Threads::Threads)
+
+find_package(Boost COMPONENTS system filesystem thread program_options REQUIRED)
+include_directories(${Boost_INCLUDE_DIR})
+
+set(nmxh5read_INC ../nmx/Readout.h ../nmx/ReadoutFile.h)
+set(nmxh5read_SRC misc/readnmx5htest.cpp ../nmx/ReadoutFile.cpp)
+
+create_executable(nmxh5read)
+
+find_package(HDF5 REQUIRED COMPONENTS C)
+include_directories(${HDF5_INCLUDE_DIRS})
+
+add_library(nmxreadout STATIC ../nmx/Readout.h ../nmx/ReadoutFile.h ../nmx/ReadoutFile.cpp)
+
+set(nmxclustererh5_INC
+        ${NMXCLUSTERER_INC}
+        ../nmx/Readout.h
+        ../nmx/ReadoutFile.h)
+set(nmxclustererh5_SRC nmxclustererh5.cpp
+        ${NMXCLUSTERER_SRC}
+        ../nmx/ReadoutFile.cpp )
+
+create_executable(nmxclustererh5 -latomic)
+
+#add_executable(nmxclustererh5 nmxclustererh5.cpp)
+#target_link_libraries(nmxclustererh5 nmxbase nmxreadout Threads::Threads ${EFU_COMMONLIBS})
+
+
+#add_library(nmxh5read STATIC ../nmx/Readout.h ../nmx/ReadoutFile.h ../nmx/ReadoutFile.cpp)
+
+#add_executable(readnmxh5test misc/readnmx5htest.cpp)
+#target_link_libraries(readnmxh5test ${Boost_LIBRARYDIR} nmxh5read)
 
 #add_executable(verifyclusterer verifyClusterer.cpp)
 #target_link_libraries(verifyclusterer nmxhelper)
 
 # Tests
 
-set(NMXBoxAdministrationTest_INC ${NMXCLUSTERER_INC} )
-set(NMXBoxAdministrationTest_SRC
-        tests/testBoxAdministration.cpp
-        clusterer/src/NMXBoxAdministration.cpp
-        )
-create_test_executable(NMXBoxAdministrationTest)
+#set(NMXBoxAdministrationTest_INC ${NMXCLUSTERER_INC} )
+#set(NMXBoxAdministrationTest_SRC
+#        tests/testBoxAdministration.cpp
+#        clusterer/src/NMXBoxAdministration.cpp
+#        )
+#create_test_executable(NMXBoxAdministrationTest)

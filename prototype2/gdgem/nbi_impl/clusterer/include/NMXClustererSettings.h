@@ -24,24 +24,29 @@ namespace nmx {
      *
      * Number of readout channels per plane per sector in the NMX-detector
      */
-    const unsigned int STRIPS_PER_PLANE = 256;
+    const unsigned int STRIPS_PER_PLANE = 512;
+
+    const unsigned int TRIPLETBUFFER = 512;
 
     /*! Number of neighboring bits to consider for merging two clusters.
      *
      * This parameter effective sets the maximum allowed gap in strips for the clustering algorithm.
      * The gap is calculated by \f$ \textrm{Max}_{\textrm{gap}} = 2 \cdot \textrm{INCLUDE\_N\_NEIGHBOURS} +1 \f$
      */
-    const unsigned int INCLUDE_N_NEIGHBOURS = 5;
+    const unsigned int INCLUDE_N_NEIGHBOURS = 3;
+
+    const unsigned int MAXCLUSTERTIMEGAP = 100;
 
     /*! Maximum cluster time
      *
      * This value sets an upper limit to how long a cluster can be in time. This value is specific to the detector
      * configuration and is related to the drift velocity of the electrons in the detector gas medium.
      */
-    const unsigned int MAX_CLUSTER_TIME = static_cast<unsigned int>(30 * 32);
+    const unsigned int MAX_CLUSTER_TIME = 500;
+    //const unsigned int MAX_CLUSTER_TIME = static_cast<unsigned int>(30 * 32);
+
+    const unsigned int MINPOINTSINCLUSTER = 8;
     ///@}
-
-
 
     /*! @name Sorting buffer parameters
      *
@@ -59,7 +64,7 @@ namespace nmx {
      *
      * This sets the size of the sorting buffer. The size of the buffer will be 2 to the power of this value.
      */
-    const unsigned int DATA_MINOR_BITS  =  7; // Sorting bits
+    const unsigned int DATA_MINOR_BITS  =  13; // Sorting bits
     ///@}
 
 
@@ -71,8 +76,11 @@ namespace nmx {
      * See NMXClusterer::getFailedClusterRequests. The transfer buffer between clustering and paring is set to the same
      * size.
      */
-    const unsigned int NCLUSTERS = 30;
+    const unsigned int NCLUSTERS = 100;
     ///@}
+
+    const unsigned int MAXCLUSTERQUEUEDIFF = 10;
+
 
     /*! @name Q-matrix parameters
      *
@@ -91,7 +99,7 @@ namespace nmx {
      * Meaningful values of Q are in the range ]0,2]
      * Lower value = stricter requirements. 2 = no requirement.
      */
-    const double DELTA_Q = 2.0;
+    const double DELTA_Q = 0.3;
     ///@}
 
     /*! @name Paring buffer paramaters
@@ -150,7 +158,7 @@ namespace nmx {
      *
      * This calculates the size of the pairing buffer
      */
-    const uint32_t CLUSTER_MAX_MINOR  = 1 << CLUSTER_MINOR_BITS;
+    const uint32_t CLUSTER_MAX_MINOR  = 1 << CLUSTER_MINOR_BITS ;
 
     /*! Mask for retrieving the index
      *

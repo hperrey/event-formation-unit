@@ -139,7 +139,7 @@ bool NMXBoxAdministration::checkBox(unsigned int boxid, const nmx::DataPoint &po
 
     uint time_diff = std::abs(static_cast<int>(point.time) - static_cast<int>(box.max_time));
 
-    if (time_diff > nmx::MAX_CLUSTER_TIME)
+    if (time_diff > nmx::MAXCLUSTERTIMEGAP)
         return true;
 
     return false;

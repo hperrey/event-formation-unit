@@ -6,8 +6,8 @@
 #include "../include/NMXClusterer.h"
 
 NMXClusterer::NMXClusterer()
-        : m_XplaneClusterer(0, m_clusterManager, m_clusterPairing, m_mutex),
-          m_YplaneClusterer(1, m_clusterManager, m_clusterPairing, m_mutex),
+        : m_XplaneClusterer(0, m_clusterManager, m_clusterPairing/*, m_mutex*/),
+          m_YplaneClusterer(1, m_clusterManager, m_clusterPairing/*, m_mutex*/),
           m_clusterPairing(m_clusterManager)
 {
 }

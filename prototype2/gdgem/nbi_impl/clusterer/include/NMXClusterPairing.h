@@ -26,7 +26,7 @@ public:
     void terminate() { m_terminate = true; }
 
     uint64_t getNumberOfPaired() { return  m_nPairs; }
-    uint64_t getNumberOfLateClusters() { return m_nLateClusters; }
+    uint64_t* getNumberOfLateClusters() { return m_nLateClusters; }
 
    private:
 
@@ -36,7 +36,7 @@ public:
     std::array<unsigned int, 2> m_nOut;
 
     std::array<nmx::ClusterParingEntry, nmx::CLUSTER_MAX_MINOR> m_time_ordered_buffer;
-    nmx::dataColumn_t m_majortime_buffer;
+    std::array<uint32_t, nmx::CLUSTER_MAX_MINOR> m_majortime_buffer;
     uint32_t m_i1;
 
     unsigned int m_nXthis;
@@ -50,14 +50,14 @@ public:
     bool m_terminate;
 
     uint64_t m_nPairs = 0;
-    uint64_t m_nLateClusters = 0;
+    uint64_t m_nLateClusters[2] = {0, 0};
 
     NMXClusterManager &m_clusterManager;
     NMXLocationFinder  m_locationFinder;
 
     void process();
     std::thread t_process;
-    std::mutex m_mutex;
+    int m_yields = 100000;
 
     uint32_t getMinorTime(uint32_t time);
     uint32_t getMajorTime(uint32_t time);

@@ -21,6 +21,7 @@ NMXClusterPairing::NMXClusterPairing(NMXClusterManager &clusterManager)
           m_clusterManager(clusterManager),
           m_locationFinder(clusterManager)
 {
+    std::cout << "Reset" << std::endl;
     reset();
     m_Qmatrix.reset();
 
@@ -44,10 +45,9 @@ void NMXClusterPairing::insertClusterInQueue(int plane, unsigned int cluster_idx
         throw 1;
     }
 
-    while (m_nIn.at(plane) - m_nOut.at(plane) > nmx::NCLUSTERS-1)
+    while (m_nIn.at(plane) - m_nOut.at(plane) > nmx::NCLUSTERS-1) {
         std::this_thread::yield();
-
-    m_mutex.lock();
+    }
 
     if (m_verbose_level > 2) {
         std::cout << "<NMXClusterPairing::insertClusterInQueue> Queue before:\n";
@@ -63,7 +63,6 @@ void NMXClusterPairing::insertClusterInQueue(int plane, unsigned int cluster_idx
         printQueue();
     }
 
-    m_mutex.unlock();
     if (m_verbose_level > 1)
         std::cout << "<NMXClusterPairing::insertClusterInQueue> Inserted index " << cluster_idx << " at " << buffer_idx
                   << " in plane " << plane << std::endl;
@@ -82,8 +81,6 @@ void NMXClusterPairing::process() {
         }
 
         if (m_nIn.at(plane) > m_nOut.at(plane)) {
-
-            checkSortBuffer();
 
             unsigned int buffer_idx = m_nOut.at(plane) % nmx::NCLUSTERS;
             unsigned int cluster_idx = m_queue.at(plane).at(buffer_idx);
@@ -148,12 +145,19 @@ void NMXClusterPairing::process() {
                         if (m_verbose_level > 0)
                             std::cout << "Cluster arrived to late - omitting!\n";
                         m_clusterManager.returnClusterToStack(plane, cluster_idx);
-                        m_nLateClusters++;
+                        m_nLateClusters[plane]++;
                 }
             }
         }
 
-        plane = !plane;
+        int queueSize[2];
+        queueSize[ plane] = static_cast<int>(m_nIn[ plane]) - static_cast<int>(m_nOut[ plane]);
+        queueSize[!plane] = static_cast<int>(m_nIn[!plane]) - static_cast<int>(m_nOut[!plane]);
+
+        if (queueSize[plane] - queueSize[!plane] > static_cast<int>(nmx::MAXCLUSTERQUEUEDIFF))
+            ;
+        else
+            plane = !plane;
 
         if (m_terminate)
             return;
@@ -223,7 +227,7 @@ void NMXClusterPairing::slideTimeWindow(uint d, uint minorTime, uint majorTime) 
 
     if (d > nmx::CLUSTER_MAX_MINOR) {
         std::cout << "d = " << d << " is too large!" << std::endl;
-        nmx::printMajorTimeBuffer(m_majortime_buffer);
+        //nmx::printMajorTimeBuffer(m_majortime_buffer);
         std::cout << "i1 = " << m_i1 << std::endl;
         throw 1;
     }
@@ -343,18 +347,16 @@ void NMXClusterPairing::slideTimeWindow(uint d, uint minorTime, uint majorTime) 
 
     if (m_verbose_level > 2) {
         std::cout << "Setting i1 to " << minorTime << std::endl;
-        nmx::printMajorTimeBuffer(m_majortime_buffer);
+        //nmx::printMajorTimeBuffer(m_majortime_buffer);
     }
 
     m_i1 = minorTime;
 
     if (m_verbose_level > 2) {
-        m_mutex.lock();
         m_clusterManager.printStack(0);
         m_clusterManager.printStack(1);
         printSortBuffer();
         printQueue();
-        m_mutex.unlock();
     }
 }
 

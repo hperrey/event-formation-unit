@@ -18,7 +18,7 @@ int NMXClusterManager::getClusterFromStack(unsigned int plane) {
     bool firstYield = true;
 
     while (m_stackHead.at(plane) == -1) {
-        m_nFailedClusterRequests++;
+        m_nFailedClusterRequests[plane]++;
         if (firstYield) {
             std::cout << "<NMXClusterManager::getClusterFromStack> Stack " << (plane ? "Y" : "X")
                       << " empty - yielding thread!" << std::endl;
@@ -26,9 +26,6 @@ int NMXClusterManager::getClusterFromStack(unsigned int plane) {
         }
         std::this_thread::yield();
     }
-
-    if (!firstYield)
-        std::cout << "<NMXClusterManager::getClusterFromStack> Thread released!" << std::endl;
 
     m_mutex[plane].lock();
 

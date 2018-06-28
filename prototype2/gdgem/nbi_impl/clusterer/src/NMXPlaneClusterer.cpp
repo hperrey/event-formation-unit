@@ -109,9 +109,9 @@ void NMXPlaneClusterer::timeSorting() {
 
                 guardB();
                 m_nB = minorTime+1;
-                std::this_thread::sleep_for(std::chrono::nanoseconds(1));
-                m_nC = minorTime+1;
-                assert(m_nC<=m_nB);
+                //std::this_thread::sleep_for(std::chrono::nanoseconds(1));
+                std::this_thread::yield();
+                m_nC = m_nB;
             }
 
         } else { // majorTime <= m_buffer.at(0)

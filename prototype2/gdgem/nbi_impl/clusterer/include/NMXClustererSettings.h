@@ -26,6 +26,10 @@ namespace nmx {
      */
     const unsigned int STRIPS_PER_PLANE = 512;
 
+    /*! Size of the buffer for triples in teh sort-clustering algorithm.
+     *
+     * Sets the number of available triplet containers for the sorting-clustering algorithm.
+     */
     const unsigned int TRIPLETBUFFER = 512;
 
     /*! Number of neighboring bits to consider for merging two clusters.
@@ -35,7 +39,12 @@ namespace nmx {
      */
     const unsigned int INCLUDE_N_NEIGHBOURS = 3;
 
-    const unsigned int MAXCLUSTERTIMEGAP = 100;
+    /*! Maximum time-gap in a cluster.
+     *
+     * If a gap in a cluster becomes larger than this number, the cluster is finalized and sent to the pairing part
+     * if valid.
+     */
+    const unsigned int MAXCLUSTERTIMEGAP = 200;
 
     /*! Maximum cluster time
      *
@@ -45,6 +54,11 @@ namespace nmx {
     const unsigned int MAX_CLUSTER_TIME = 500;
     //const unsigned int MAX_CLUSTER_TIME = static_cast<unsigned int>(30 * 32);
 
+    /*! Minimum number of triplets in a valid cluster.
+     *
+     * This value sets a lower limit of the number of triplets in a valid cluster. If below this number, the
+     * cluster is discarded before insertion into the pairing part.
+     */
     const unsigned int MINPOINTSINCLUSTER = 8;
     ///@}
 
@@ -68,7 +82,7 @@ namespace nmx {
     ///@}
 
 
-    /*! @name Number of clusters */
+    /*! @name Cluster parameters */
     ///@{
     /*! Set the number of available clusters.
      *
@@ -77,10 +91,14 @@ namespace nmx {
      * size.
      */
     const unsigned int NCLUSTERS = 100;
-    ///@}
 
+    /*! Set the limit to the diffenence in the number of clusters in the queue to the pairing part.
+     *
+     * When the difference in the number of clusters in the queues to the pairning part exceeds this number, the
+     * shifter stays in the longest queue until the diffence is below again.
+     */
     const unsigned int MAXCLUSTERQUEUEDIFF = 10;
-
+    ///@}
 
     /*! @name Q-matrix parameters
      *
@@ -99,7 +117,7 @@ namespace nmx {
      * Meaningful values of Q are in the range ]0,2]
      * Lower value = stricter requirements. 2 = no requirement.
      */
-    const double DELTA_Q = 0.3;
+    const double DELTA_Q = 0.7;
     ///@}
 
     /*! @name Paring buffer paramaters
@@ -118,7 +136,7 @@ namespace nmx {
      *
      * This sets the size of the pairing buffer. The size of the buffer will be 2 to the power of this value.
      */
-    const unsigned int CLUSTER_MINOR_BITS  = DATA_MINOR_BITS;
+    const unsigned int CLUSTER_MINOR_BITS  = DATA_MINOR_BITS+1;
     ///@}
 }
 

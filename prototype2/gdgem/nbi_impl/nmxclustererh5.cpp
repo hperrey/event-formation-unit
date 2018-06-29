@@ -2,11 +2,14 @@
 // Created by soegaard on 6/13/18.
 //
 
+#include <chrono>
 #include "../nmx/Readout.h"
 #include "../nmx/ReadoutFile.h"
 
 #include "clusterer/include/NMXClustererDefinitions.h"
 #include "clusterer/include/NMXClusterer.h"
+
+typedef std::chrono::high_resolution_clock Clock;
 
 int main() {
 
@@ -29,6 +32,8 @@ int main() {
     uint32_t counter = 0;
 
     std::cout << "Processing " << readN << " points !" << std::endl;
+
+    auto t1 = Clock::now();
 
     while (true) {
 
@@ -77,23 +82,28 @@ int main() {
             break;
     }
 
+    auto t2 = Clock::now();
+
+    long time = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
 
     unsigned int w1 = 40;
     unsigned int w2 = 10;
 
     std::cout << std::endl;
-    /*std::cout.width(w1); std::cout << std::left << "Processing time :" << std::right
-                                   << std::setw(w2) << time << " ms" << std::endl;*/
+    std::cout.width(w1); std::cout << std::left << "Processing time :" << std::right
+                                   << std::setw(w2) << time << " ms" << std::endl;
     std::cout << std::endl;
     std::cout.width(w1); std::cout << std::left << "Number of inserted data-points [X]:" << std::right
                                    << std::setw(w2) << c.getNumberofInsertedDataPointsX() << " points" << std::endl;
     std::cout.width(w1); std::cout << std::left << "Number of inserted data-points [Y]:" << std::right
                                    << std::setw(w2) << c.getNumberofInsertedDataPointsY() << " points" << std::endl;
-    /* std::cout.width(w1); std::cout << std::left << "Data-point processing time :" << std::right
+    std::cout.width(w1); std::cout << std::left << "Data-point processing time :" << std::right
                                     << std::setw(w2) << 1.* static_cast<double>(time)/
                                                             static_cast<double>(npoints) << " us" << std::endl;
      std::cout.width(w1); std::cout << std::left << "Data-point processing rate :"  << std::right
-                                    << std::setw(w2) << 1./(static_cast<double>(time)/ static_cast<double>(npoints)/1000000.) << " Hz" << std::endl;*/
+                                    << std::setw(w2)
+                                    << 1./(static_cast<double>(time)/ static_cast<double>(npoints)/1000000.) << " Hz"
+                                    << std::endl;
     std::cout << std::endl;
     uint64_t nClustersX = c.getNumberOfProducedClustersX();
     uint64_t nClustersY = c.getNumberOfProducedClustersY();

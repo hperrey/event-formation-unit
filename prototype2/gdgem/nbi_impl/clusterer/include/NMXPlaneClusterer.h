@@ -137,7 +137,6 @@ private:
     int getEntryFromQueue();
     void insertEntryInQueue(unsigned int idx);
     BufferEntry* getBufferEntry(unsigned int idx);
-    int getLastInQueue(int idx);
 
     void addToBuffer(const nmx::DataPoint &point, uint minorTime);
     void moveToClusterer(uint d, uint minorTime, uint majorTime);

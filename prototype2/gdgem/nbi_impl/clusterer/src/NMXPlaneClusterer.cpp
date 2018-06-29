@@ -107,11 +107,13 @@ void NMXPlaneClusterer::timeSorting() {
                 moveToClusterer(nmx::DATA_MINOR_BITMASK+1, minorTime, majorTime);
                 addToBuffer(m_point_buffer, minorTime);
 
+                // ***************************************************************
+                // Do not modify this section unless you know what you are doing!
+                // This is critical for the synchronization of the threads!
                 guardB();
                 m_nB = minorTime+1;
-                //std::this_thread::sleep_for(std::chrono::nanoseconds(1));
-                std::this_thread::yield();
                 m_nC = m_nB;
+                // ***************************************************************
             }
 
         } else { // majorTime <= m_buffer.at(0)
@@ -167,9 +169,6 @@ void NMXPlaneClusterer::clustering() {
 
     while (1) {
 
-        if (static_cast<int>(m_nB) < static_cast<int>(m_nC))
-            m_nC = m_nB;
-
         int nBtmp = (int)m_nB;
         int nCtmp = (int)m_nC;
 
@@ -188,11 +187,6 @@ void NMXPlaneClusterer::clustering() {
             nBtmp = (int)m_nB;
             nCtmp = (int)m_nC;
         }
-
-
-
-        if (static_cast<int>(m_nB) < static_cast<int>(m_nC))
-            m_nC = m_nB;
 
         unsigned int idx = m_nC % nmx::DATA_MAX_MINOR;
 
@@ -334,8 +328,10 @@ void NMXPlaneClusterer::addToBuffer(const nmx::DataPoint &point, const uint mino
     int &queue = m_time_ordered_buffer.at(i0).at(minorTime);
     if (queue == -1)
         queue = entryIdx;
-    else
-        getBufferEntry(getLastInQueue(queue))->link = entryIdx;
+    else {
+        entry->link = queue;
+        queue = entryIdx;
+    }
 }
 
 void NMXPlaneClusterer::moveToClusterer(uint d, uint minorTime, uint majorTime) {
@@ -711,27 +707,6 @@ BufferEntry* NMXPlaneClusterer::getBufferEntry(unsigned int idx) {
         std::cerr << "<NMXPlaneClusterer::insertEntryInQueue> Index = " << idx << " is too large!" << std::endl;
     else
         ret = &m_bufferEntries.at(idx);
-
-    return ret;
-}
-
-int NMXPlaneClusterer::getLastInQueue(int idx) {
-
-    int ret = idx;
-
-    if (idx < -1 || idx >= static_cast<int>(nmx::TRIPLETBUFFER)) {
-        std::cerr << "<NMXPLaneClusterer::getLastInQueue> Index cannot be " << idx << " must be in [-1, "
-                  << nmx::STRIPS_PER_PLANE-1 << "]" << std::endl;
-        ret = INT32_MAX;
-    }
-
-    while (idx != -1) {
-
-        idx = m_bufferEntries.at(idx).link;
-
-        if (idx != -1)
-            ret = idx;
-    }
 
     return ret;
 }

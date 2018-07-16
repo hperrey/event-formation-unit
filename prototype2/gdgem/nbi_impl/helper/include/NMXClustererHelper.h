@@ -16,7 +16,7 @@
 namespace nmx {
 
 
-    static bool checkD(uint d, std::string s) {
+    static bool __attribute__((unused)) checkD(uint d, std::string s) {
 
         if (d > nmx::DATA_MAX_MINOR) {
             std::string sout("\n<");
@@ -35,7 +35,7 @@ namespace nmx {
 
     //*****************************************************************************************************************
 
-    static bool checkPoint(const nmx::DataPoint& point, std::string s) {
+    static bool __attribute__((unused)) checkPoint(const nmx::DataPoint& point, std::string s) {
 
         if (point.strip >= nmx::STRIPS_PER_PLANE) {
             std::cerr << "<" << s << "> Strip # " << point.strip << " is larger than " << nmx::STRIPS_PER_PLANE - 1
@@ -50,7 +50,7 @@ namespace nmx {
 
     //*****************************************************************************************************************
 
-    static bool checkMinorTime(uint32_t minortime, std::string s) {
+    static bool __attribute__((unused)) checkMinorTime(uint32_t minortime, std::string s) {
 
         if (minortime >= nmx::DATA_MAX_MINOR) {
             std::cerr << "<" << s << "> Minor-time = " << minortime << " max minor-time = " << nmx::DATA_MAX_MINOR - 1
@@ -64,14 +64,14 @@ namespace nmx {
 
     //*****************************************************************************************************************
 
-    static void printPoint(const nmx::DataPoint &point) {
+    static void __attribute__((unused)) printPoint(const nmx::DataPoint &point) {
 
         std::cout << "Point : S = " << point.strip << " C = " << point.charge << " T = " << point.time << std::endl;
     }
 
     //*****************************************************************************************************************
 
-    static void printTimeOrderedBuffer(const nmx::time_ordered_buffer& time_ordered_buffer,
+    static void __attribute__((unused)) printTimeOrderedBuffer(const nmx::time_ordered_buffer& time_ordered_buffer,
                                        const nmx::dataColumn_t& SortQ) {
 
         std::cout << "Time ordered DataBuffer :\n";
@@ -112,7 +112,7 @@ namespace nmx {
 
     //*****************************************************************************************************************
 
-    static void printBox(const nmx::Box &box) {
+    static void __attribute__((unused)) printBox(const nmx::Box &box) {
 
         std::cout << "Strips [" << box.min_strip << ", " << box.max_strip << "]\n";
         std::cout << "Time   [" << box.min_time << ", " << box.max_time << "]\n";
@@ -120,7 +120,7 @@ namespace nmx {
 
     //*****************************************************************************************************************
 
-    static void printBox(int boxid, NMXBoxAdministration *boxes) {
+    static void __attribute__((unused)) printBox(int boxid, NMXBoxAdministration *boxes) {
 
         std::cout << "Box-id " << boxid << std::endl;
 
@@ -132,7 +132,7 @@ namespace nmx {
 
     //*****************************************************************************************************************
 
-    static void printMajorTimeBuffer(const nmx::dataColumn_t& majortime_buffer) {
+    static void __attribute__((unused)) printMajorTimeBuffer(const nmx::dataColumn_t& majortime_buffer) {
 
         std::cout <<"\nMajorTimeBuffer:\n";
 
@@ -151,7 +151,7 @@ namespace nmx {
 
     //*****************************************************************************************************************
 
-    static void checkI1(const nmx::dataColumn_t& majortime_buffer, const uint i1) {
+    static void __attribute__((unused)) checkI1(const nmx::dataColumn_t& majortime_buffer, const uint i1) {
 
         bool ok = true;
 
@@ -184,7 +184,7 @@ namespace nmx {
 
     //*****************************************************************************************************************
 
-    static void printMask(nmx::dataRow_t mask) {
+    static void __attribute__((unused)) printMask(nmx::dataRow_t mask) {
 
         std::cout <<"\nMask:\n";
 
@@ -203,7 +203,7 @@ namespace nmx {
 
     //*****************************************************************************************************************
 
-    static void printQueue(unsigned int plane, int idx, NMXClusterManager &manager) {
+    static void __attribute__((unused)) printQueue(unsigned int plane, int idx, NMXClusterManager &manager) {
 
         if (idx < 0) {
             std::cout << "Empty!\n";
@@ -226,4 +226,3 @@ namespace nmx {
 }
 
 #endif //PROJECT_NMXCLUSTERERDEBUGINFO_H
-

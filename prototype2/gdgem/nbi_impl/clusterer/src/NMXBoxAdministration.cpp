@@ -104,7 +104,7 @@ void NMXBoxAdministration::releaseBoxFromHead() {
     int emptyBox = m_queueHead;
     m_queueHead = m_boxList[emptyBox].link1;
     if (m_boxList[emptyBox].link1 > -1)
-        m_boxList[m_queueHead].link2 =- 1;
+        m_boxList[m_queueHead].link2 = -1;
 }
 
 void NMXBoxAdministration::updateBox(unsigned int boxid, const nmx::DataPoint &point) {

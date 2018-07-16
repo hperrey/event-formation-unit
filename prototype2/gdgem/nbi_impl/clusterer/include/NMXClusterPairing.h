@@ -57,7 +57,7 @@ public:
 
     void process();
     std::thread t_process;
-    int m_yields = 100000;
+    //int m_yields = 100000;
 
     uint32_t getMinorTime(uint32_t time);
     uint32_t getMajorTime(uint32_t time);

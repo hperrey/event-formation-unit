@@ -157,7 +157,7 @@ private:
     void checkBitSum();
     void printInitialization();
 
-    int m_yields = 100000;
+    //int m_yields = 100000;
 
     /*
     bool m_trackPoint = false;

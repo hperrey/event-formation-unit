@@ -133,10 +133,10 @@ int main() {
 
     auto t2 = Clock::now();
 
-    long time = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+    long __attribute__((unused)) time = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
 
-    unsigned int w1 = 40;
-    unsigned int w2 = 10;
+    //unsigned int w1 = 40;
+    //unsigned int w2 = 10;
 
 
     c.terminate();

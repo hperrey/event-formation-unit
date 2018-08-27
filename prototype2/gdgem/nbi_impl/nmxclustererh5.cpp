@@ -11,7 +11,13 @@
 
 typedef std::chrono::high_resolution_clock Clock;
 
-int main() {
+int main(int argc, char *argv[]) {
+
+    std::string h5file = "../prototype2/gdgem/clustering/test_data/run16full.h5";
+
+    if (argc == 2) {
+      h5file = argv[1];
+    }
 
     NMXClusterer c;
 
@@ -20,8 +26,13 @@ int main() {
     int chunckSize = 1000000;
 
     int read = 0;
-
-    auto file = ReadoutFile::open("/home/soegaard/NMXClustererTests/run16full.h5");
+    ReadoutFile file;
+    try {
+      file = ReadoutFile::open(h5file);
+    } catch (...) {
+      printf("\nUnable to open file %s\n", h5file.c_str());
+      exit(1);
+    }
 
     if (readN < 0)
         readN = file.count();

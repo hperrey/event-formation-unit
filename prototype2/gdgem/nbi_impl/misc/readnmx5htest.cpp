@@ -6,11 +6,22 @@
 #include "../../nmx/Readout.h"
 #include "../../nmx/ReadoutFile.h"
 
-int main() {
+int main(int argc, char * argv[]) {
+
+    std::string h5file = "../prototype2/gdgem/clustering/test_data/run16full.h5";
+    if (argc == 2) {
+        h5file = argv[1];
+    }
 
     int readN = 1000;
 
-    auto file = ReadoutFile::open("run16full.h5");
+    ReadoutFile file;
+    try {
+      file = ReadoutFile::open(h5file);
+    } catch (...) {
+      printf("\nUnable to open file %s\n", h5file.c_str());
+      exit(1);
+    }
 
     file.read_at(0, readN);
 

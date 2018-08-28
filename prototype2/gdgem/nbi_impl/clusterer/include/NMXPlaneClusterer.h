@@ -6,7 +6,6 @@
 #define NMX_CLUSTERER_CLUSTERER_H
 
 #include <vector>
-#include <thread>
 
 #include "NMXClustererDefinitions.h"
 #include "NMXBoxAdministration.h"
@@ -63,7 +62,7 @@ public:
      */
     bool addDataPoint(const nmx::DataPoint &point);
     /*! Not implented. */
-    bool addDataPoint(uint32_t strip, uint32_t time, uint32_t charge);
+    //bool addDataPoint(uint32_t strip, uint32_t time, uint32_t charge);
 
     /*! Time sorting
      *

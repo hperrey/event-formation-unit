@@ -37,12 +37,12 @@ NMXPlaneClusterer::~NMXPlaneClusterer()
     con.join();
 }
 
-bool NMXPlaneClusterer::addDataPoint(uint32_t strip, uint32_t time, uint32_t charge) {
-
-    nmx::DataPoint point = {strip, charge, time};
-
-    return addDataPoint(point);
-}
+// bool NMXPlaneClusterer::addDataPoint(uint32_t strip, uint32_t time, uint32_t charge) {
+//
+//     nmx::DataPoint point = {strip, charge, time};
+//
+//     return addDataPoint(point);
+// }
 
 bool NMXPlaneClusterer::addDataPoint(const nmx::DataPoint &point) {
 

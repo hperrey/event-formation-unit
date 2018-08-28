@@ -56,6 +56,7 @@ int main(int argc, char *argv[]) {
         file.read_at(read, readpoints);
 
         std::cout << "Processing chunk of size " << readpoints << std::endl;
+
         for (auto data : file.data) {
 
             if (npoints % 10000 == 0)
@@ -102,7 +103,7 @@ int main(int argc, char *argv[]) {
 
     std::cout << std::endl;
     std::cout.width(w1); std::cout << std::left << "Processing time :" << std::right
-                                   << std::setw(w2) << time << " ms" << std::endl;
+                                   << std::setw(w2) << time << " us" << std::endl;
     std::cout << std::endl;
     std::cout.width(w1); std::cout << std::left << "Number of inserted data-points [X]:" << std::right
                                    << std::setw(w2) << c.getNumberofInsertedDataPointsX() << " points" << std::endl;

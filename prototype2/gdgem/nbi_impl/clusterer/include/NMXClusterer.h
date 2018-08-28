@@ -5,8 +5,6 @@
 #ifndef NMXCLUSTERER_H
 #define NMXCLUSTERER_H
 
-#include <thread>
-
 #include "../include/NMXClustererDefinitions.h"
 #include "../include/NMXPlaneClusterer.h"
 #include "../include/NMXClusterPairing.h"

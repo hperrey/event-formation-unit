@@ -20,21 +20,6 @@ images = [
         'name': 'essdmscdm/centos7-build-node:3.4.0',
         'sh': '/usr/bin/scl enable rh-python35 devtoolset-6 -- /bin/bash -e',
         'cmake_flags': '-DCMAKE_BUILD_TYPE=Release -DCMAKE_SKIP_BUILD_RPATH=ON'
-    ],
-    'centos7': [
-        'name': 'essdmscdm/centos7-build-node:3.4.0',
-        'sh': '/usr/bin/scl enable rh-python35 devtoolset-6 -- /bin/bash -e',
-        'cmake_flags': '-DCOV=ON'
-    ],
-    'ubuntu1804': [
-        'name': 'essdmscdm/ubuntu18.04-build-node:1.2.0',
-        'sh': 'bash -e',
-        'cmake_flags': ''
-    ],
-    'debian9': [
-        'name': 'essdmscdm/debian9-build-node:2.4.0',
-        'sh'  : 'bash -e',
-        'cmake_flags': ''
     ]
 ]
 
@@ -255,31 +240,6 @@ def get_pipeline(image_key)
     }
 }
 
-def get_macos_pipeline()
-{
-    return {
-        stage("macOS") {
-            node ("macos") {
-            // Delete workspace when build is done
-                cleanWs()
-
-                dir("${project}") {
-                    checkout scm
-                }
-
-                dir("${project}/build") {
-                    sh "conan install --build=outdated .."
-                    sh "cmake -DCONAN=MANUAL -DCMAKE_MACOSX_RPATH=ON .."
-                    sh "make -j4"
-                    sh "make -j4 unit_tests"
-                    sh "make runtest"
-                    sh "make runefu"
-                }
-            }
-        }
-    }
-}
-
 node('docker') {
     // Delete workspace when build is done
     cleanWs()
@@ -293,17 +253,6 @@ node('docker') {
                 failure_function(e, 'Checkout failed')
             }
         }
-
-        stage("Static analysis") {
-            try {
-                sh "find . -name '*TestData.h' > exclude_cloc"
-                sh "cloc --exclude-list-file=exclude_cloc --by-file --xml --out=cloc.xml ."
-                sh "xsltproc jenkins/cloc2sloccount.xsl cloc.xml > sloccount.sc"
-                sloccountPublish encoding: '', pattern: ''
-            } catch (e) {
-                failure_function(e, 'Static analysis failed')
-            }
-        }
     }
 
     def builders = [:]
@@ -312,7 +261,6 @@ node('docker') {
         def image_key = x
         builders[image_key] = get_pipeline(image_key)
     }
-    builders['macOS'] = get_macos_pipeline()
 
     try {
         parallel builders

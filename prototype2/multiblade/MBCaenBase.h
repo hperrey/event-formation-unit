@@ -64,6 +64,7 @@ protected:
     int64_t readouts_ok;
     int64_t readouts_error_bytes;
     int64_t readouts_seq_errors;
+    int64_t readouts_seq_trg_errors;
     int64_t tx_bytes;
     int64_t events;
     int64_t events_no_coincidence;

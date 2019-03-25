@@ -55,7 +55,7 @@ public:
     memset(Buffer, 0, 32); // clear header
     hp->globalTime = global_time;
     hp->digitizerID = digitizer;
-    hp->elementType = Multiblade::ElementType;
+    hp->elementType = Multiblade::ElementTypeList422;
     hp->version = Multiblade::Version;
     hp->seqNum = SequenceNumber;
     Entries = 0;

@@ -63,6 +63,7 @@ CAENBase::CAENBase(BaseSettings const &settings, struct CAENSettings &LocalMBCAE
 
   Stats.create("readouts.error_bytes", mystats.readouts_error_bytes);
   Stats.create("readouts.seq_errors", mystats.readouts_seq_errors);
+  Stats.create("readouts.seq_trg_errors", mystats.readouts_seq_trg_errors);
 
   Stats.create("thread.processing_idle", mystats.rx_idle1);
 
@@ -233,6 +234,7 @@ void CAENBase::processing_thread() {
         continue;
       }
       mystats.readouts_seq_errors += parser.Stats.seq_errors;
+      mystats.readouts_seq_trg_errors += parser.Stats.seq_trg_errors;
 
       XTRACE(DATA, DEB, "Received %d readouts from digitizer %d",
              parser.MBHeader->numElements, parser.MBHeader->digitizerID);

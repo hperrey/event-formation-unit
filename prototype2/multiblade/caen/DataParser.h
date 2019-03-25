@@ -16,9 +16,10 @@ namespace Multiblade {
 /// \todo consider using the real values  and using
 /// htons() in the parser
 // 0x0102 (1.3) byteswapped
-constexpr uint16_t Version = 0x0301;
+constexpr uint16_t Version = 0x0103;
 // 0x0100 byteswapped)
-constexpr uint16_t ElementType = 0x0001;
+ constexpr uint16_t ElementTypeList422 = 0x0001;
+ constexpr uint16_t ElementTypeStandard = 0x0003;
 
 class DataParser {
 public:
@@ -42,13 +43,24 @@ public:
     uint16_t adcValue;
   };
 
+  struct __attribute__ ((__packed__)) WavFrmElement751 {
+    uint32_t localTime;
+    uint8_t channelMask;
+    uint32_t eventNo;
+    uint16_t num_samples;
+    uint16_t samples;
+  };
+
   DataParser() {}
 
   int parse(const char * /*void **/ buffer, unsigned int size);
+  void parseList422(struct ListElement422 *data);
+  void parseWavFrm751(void *data);
 
   struct Stats {
     uint64_t error_bytes{0};
     uint64_t seq_errors{0};
+    uint64_t seq_trg_errors{0};
   } Stats;
 
   Readout prototype;
@@ -58,6 +70,7 @@ public:
   struct ListElement422 *Data{nullptr};
 
   uint32_t PreviousSeqNum{0};
+  uint32_t PreviousEvtNumWavFrm{0};
 };
 
 }

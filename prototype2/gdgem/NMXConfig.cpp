@@ -64,6 +64,8 @@ NMXConfig::NMXConfig(std::string configfile, std::string calibrationfile) {
   send_raw_hits = root["send_raw_hits"].get<bool>();
 
   if (perform_clustering) {
+    auto match = root["match_clusters"];
+    
     auto cx = root["clusterer x"];
     clusterer_x.max_strip_gap = cx["max_strip_gap"].get<unsigned int>();
     clusterer_x.max_time_gap = cx["max_time_gap"].get<double>();

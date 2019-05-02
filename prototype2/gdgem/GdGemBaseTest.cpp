@@ -48,7 +48,7 @@ TEST_F(GdGemBaseTest, GetCalibrationCmd) {
   int res = Readout.getCalibration(badcmdlen, Output, &OutputBytes);
   EXPECT_LT(res, 0);
 
-  std::vector<std::string> goodcmd = {"NMX_GET_CALIB", "0", "0", "0"};
+  std::vector<std::string> goodcmd = {"NMX_GET_CALIB", "vmm_adc_calibration", "0", "0", "0"};
   res = Readout.getCalibration(goodcmd, Output, &OutputBytes);
   EXPECT_EQ(res, 0);
 }

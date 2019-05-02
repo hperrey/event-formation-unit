@@ -11,6 +11,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 namespace Gem {
 
@@ -19,6 +20,7 @@ struct Calibration {
   float offset {0.0};
   float slope {1.0};
 };
+
 
 class CalibrationFile {
 public:
@@ -36,20 +38,21 @@ public:
   void loadCalibration(std::string calibration);
 
   /// \brief Generate fast mappings from IDs to indexes
-  void addCalibration(size_t fecId, size_t vmmId, size_t chNo,
+  void addCalibration(std::string type, size_t fecId, size_t vmmId, size_t chNo,
                       float offset, float slope);
 
-  /// \brief get calibration data for (fec, vmm, channel)
+  /// \brief get calibration data for (type, fec, vmm, channel)
   /// \todo check how vmm3 data is supplied, maybe getting an array for a given
   /// (fec, vmm) is better?
-  const Calibration& getCalibration(size_t fecId, size_t vmmId, size_t chNo) const;
+  const Calibration& getCalibration(std::string type, size_t fecId, size_t vmmId, size_t chNo) const;
 
   std::string debug() const;
 
+  static std::map<std::string, unsigned int> CalibrationTypes; 	
 private:
-  std::vector<std::vector<std::vector<Calibration>>> Calibrations;
-
-  /// Default correction
+  std::vector<std::vector<std::vector<std::vector<Calibration>>>> Calibrations;
+  
+   /// Default correction
   Calibration NoCorr {0.0, 1.0};
 };
 

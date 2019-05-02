@@ -20,6 +20,11 @@ using json = nlohmann::json;
 
 namespace Gem {
 
+std::map<std::string,unsigned int> CalibrationFile::CalibrationTypes = {
+   {"vmm_adc_calibration", 0},
+   {"vmm_time_calibration", 1}
+};
+
 /// \brief load calibration from file
 CalibrationFile::CalibrationFile(std::string jsonfile) : CalibrationFile() {
 
@@ -51,25 +56,26 @@ void CalibrationFile::loadCalibration(std::string jsonstring) {
   }
 
   try {
-    auto VmmCals = Root["vmm_calibration"];
-    for (auto &vmmcal : VmmCals) {
-      auto fecid = vmmcal["fecID"].get<size_t>();
-      auto vmmid = vmmcal["vmmID"].get<size_t>();
-      auto offsets = vmmcal["offsets"];
-      auto slopes = vmmcal["slopes"];
+    for(auto &types: CalibrationTypes) {
+      auto VmmCals = Root[types.first];
+      for (auto &vmmcal : VmmCals) {
+        auto fecid = vmmcal["fecID"].get<size_t>();
+        auto vmmid = vmmcal["vmmID"].get<size_t>();
+        auto offsets = vmmcal["offsets"];
+        auto slopes = vmmcal["slopes"];
 
-      XTRACE(INIT, DEB, "fecid: %d, vmmid: %d, offsets(%d), slopes(%d)\n", fecid,
-             vmmid, offsets.size(), slopes.size());
+        XTRACE(INIT, DEB, "type: %s, fecid: %d, vmmid: %d, offsets(%d), slopes(%d)\n", types.first.c_str(), fecid,
+               vmmid, offsets.size(), slopes.size());
+        if ((slopes.size() != MAX_CH) or (offsets.size() != MAX_CH)) {
+          LOG(INIT, Sev::Warning,
+              "Invalid channel configuration, skipping for fec {} and vmm {}",
+              fecid, vmmid);
+          throw std::runtime_error("Invalid slope and array lengths in calibration file.");
+        }
 
-      if ((slopes.size() != MAX_CH) or (offsets.size() != MAX_CH)) {
-        LOG(INIT, Sev::Warning,
-            "Invalid channel configuration, skipping for fec {} and vmm {}",
-            fecid, vmmid);
-        throw std::runtime_error("Invalid slope and array lengths in calibration file.");
-      }
-
-      for (size_t j = 0; j < offsets.size(); j++) {
-        addCalibration(fecid, vmmid, j, offsets[j].get<float>(), slopes[j].get<float>());
+        for (size_t j = 0; j < offsets.size(); j++) {
+          addCalibration(types.first, fecid, vmmid, j, offsets[j].get<float>(), slopes[j].get<float>());
+        }
       }
     }
   }
@@ -79,12 +85,17 @@ void CalibrationFile::loadCalibration(std::string jsonstring) {
   }
 }
 
-void CalibrationFile::addCalibration(size_t fecId, size_t vmmId,
+void CalibrationFile::addCalibration(std::string type, size_t fecId, size_t vmmId,
                                      size_t chNo, float offset,
                                      float slope) {
-  if (fecId >= Calibrations.size())
-    Calibrations.resize(fecId + 1);
-  auto& fec = Calibrations[fecId];
+  unsigned int idx = CalibrationTypes[type];
+  if(idx >= Calibrations.size()) {
+    Calibrations.resize(idx + 1);
+  }
+  auto& theType = Calibrations[idx];	
+  if (fecId >= theType.size())
+    theType.resize(fecId + 1);
+  auto& fec = theType[fecId];
   if (vmmId >= fec.size())
     fec.resize(vmmId + 1);
   auto& vmm = fec[vmmId];
@@ -94,11 +105,16 @@ void CalibrationFile::addCalibration(size_t fecId, size_t vmmId,
   vmm[chNo] = {offset, slope};
 }
 
-const Calibration& CalibrationFile::getCalibration(size_t fecId, size_t vmmId,
+const Calibration& CalibrationFile::getCalibration(std::string type, size_t fecId, size_t vmmId,
                                 size_t chNo) const {
-  if (fecId >= Calibrations.size())
+
+  unsigned int idx = CalibrationTypes[type];
+  if (idx >= Calibrations.size())
     return NoCorr;
-  const auto& fec = Calibrations[fecId];
+  const auto& theType = Calibrations[idx];
+  if (fecId >= theType.size())
+    return NoCorr;
+  const auto& fec = theType[fecId];
   if (vmmId >= fec.size())
     return NoCorr;
   const auto& vmm = fec[vmmId];
@@ -109,25 +125,27 @@ const Calibration& CalibrationFile::getCalibration(size_t fecId, size_t vmmId,
 
 std::string CalibrationFile::debug() const {
   std::string ret;
-  for (size_t fecID = 0; fecID < Calibrations.size(); ++fecID) {
-    const auto& fec = Calibrations[fecID];
-    if (!fec.empty()) {
-      ret += fmt::format("\n  FEC={}", fecID);
-    }
-    for (size_t vmmID = 0; vmmID < fec.size(); ++vmmID) {
-      const auto &vmm = fec[vmmID];
-      if (!vmm.empty()) {
-        ret += fmt::format("\n{:>8}{:<10}", "vmm=", vmmID);
+  for (auto &types: CalibrationTypes) {
+    for (size_t fecID = 0; fecID < Calibrations[types.second].size(); ++fecID) {
+      const auto& fec = Calibrations[types.second][fecID];
+      if (!fec.empty()) {
+        ret += fmt::format("\n  FEC={}", fecID);
       }
-      for (size_t chipNo = 0; chipNo< vmm.size(); ++chipNo) {
-        const auto &cal = vmm[chipNo];
-        if ((chipNo % 8) == 0)
-          ret += fmt::format("{:<7}", "\n");
-        ret +=
-            fmt::format("{:<5}", fmt::format("[{}]", chipNo)) +
-            fmt::format("{:>7}", cal.offset) +
+      for (size_t vmmID = 0; vmmID < fec.size(); ++vmmID) {
+        const auto &vmm = fec[vmmID];
+        if (!vmm.empty()) {
+          ret += fmt::format("\n{:>8}{:<10}", "vmm=", vmmID);
+        }
+        for (size_t chipNo = 0; chipNo< vmm.size(); ++chipNo) {
+          const auto &cal = vmm[chipNo];
+          if ((chipNo % 8) == 0)
+            ret += fmt::format("{:<7}", "\n");
+          ret +=
+          fmt::format("{:<5}", fmt::format("[{}]", chipNo)) +
+          fmt::format("{:>7}", cal.offset) +
                 ((cal.slope >= 0.0) ? " +" : " -") +
-            fmt::format("{:>5}x    ", std::abs(cal.slope));
+          fmt::format("{:>5}x    ", std::abs(cal.slope));
+        }
       }
     }
   }

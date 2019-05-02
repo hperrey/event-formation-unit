@@ -67,6 +67,8 @@ struct NMXConfig {
   uint16_t adc_threshold{0};
 
   bool perform_clustering {true};
+  //Option to match clusters either on uTPC (utpc) or center of mass (center_of_mass)
+  std::string match_clusters{"utpc"};
   bool send_raw_hits {false};
 
   ClustererConfig clusterer_x;

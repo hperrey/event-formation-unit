@@ -61,12 +61,14 @@ void BuilderVMM3::process_buffer(char *buf, size_t size) {
       readout.channel = d.chno;
       readout.bcid = d.bcid;
       readout.tdc = d.tdc;
-      readout.adc = d.adc;
+      auto calibAdc = calfile_->getCalibration("vmm_adc_calibration", readout.fec, readout.chip_id, readout.channel);
+      readout.adc = (d.adc + calibAdc.offset)*calibAdc.slope;
       readout.over_threshold = (d.overThreshold != 0);
-      auto calib = calfile_->getCalibration(readout.fec, readout.chip_id, readout.channel);
+      
+      auto calibTime = calfile_->getCalibration("vmm_time_calibration", readout.fec, readout.chip_id, readout.channel);
       // \todo does this really need to be a floating point value?
       readout.chiptime = static_cast<float>(time_intepreter_.chip_time_ns(d.bcid, d.tdc,
-          calib.offset, calib.slope));
+          calibTime.offset, calibTime.slope));
 
       // \todo what if chiptime is negative?
 

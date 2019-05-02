@@ -109,6 +109,16 @@ uint64_t Event::time_gap(const Cluster &other) const {
   return (latest_start - earliest_end);
 }
 
+/*
+uint64_t Event::center_difference(const Cluster &other) const {
+  if (empty() || other.empty()) {
+    return 0; // \todo should this happen?
+  }
+  auto diff_center = std::abs(other.time_center(), time_center());
+
+  return diff_center;
+}
+*/
 
 std::string Event::debug(bool verbose) const {
   auto ret = fmt::format("Event planes({}{},{}{}):",

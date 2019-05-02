@@ -41,15 +41,16 @@ int GdGemBase::getCalibration(std::vector<std::string> cmdargs,
                         unsigned int *obytes) {
   std::string cmd = "NMX_GET_CALIB";
   LOG(CMD, Sev::Info, "{}", cmd);
-  if (cmdargs.size() != 4) {
+  if (cmdargs.size() != 5) {
     LOG(CMD, Sev::Warning, "{}: wrong number of arguments", cmd);
     return -Parser::EBADARGS;
   }
 
-  int fec = atoi(cmdargs.at(1).c_str());
-  int asic = atoi(cmdargs.at(2).c_str());
-  int channel = atoi(cmdargs.at(3).c_str());
-  auto calib = nmx_opts.calfile->getCalibration(fec, asic, channel);
+  std::string type = cmdargs.at(1).c_str();
+  int fec = atoi(cmdargs.at(2).c_str());
+  int asic = atoi(cmdargs.at(3).c_str());
+  int channel = atoi(cmdargs.at(4).c_str());
+  auto calib = nmx_opts.calfile->getCalibration(type, fec, asic, channel);
   if ((std::abs(calib.offset) <= 1e-6) and (std::abs(calib.slope) <= 1e-6)) {
     *obytes =
         snprintf(output, SERVER_BUFFER_SIZE, "<error> no calibration exist");

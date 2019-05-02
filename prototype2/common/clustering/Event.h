@@ -82,6 +82,11 @@ public:
   /// \returns time gap
   uint64_t time_gap(const Cluster &other) const;
 
+  /// \brief calculates the difference between center times of event and cluster
+  /// \param other cluster to be compared
+  /// \returns time difference
+  uint64_t center_difference(const Cluster &other) const;
+
   /// \returns string describing event bounds and weights
   /// \param verbose also print hits
   std::string debug(bool verbose = false) const;
